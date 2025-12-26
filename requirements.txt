@@ -1,0 +1,28 @@
+# Toy Recommendation API - Python Dependencies
+# Python 3.7+ required
+
+# Web Framework & Server
+fastapi>=0.68.0
+uvicorn[standard]>=0.15.0
+pydantic>=1.8.0
+
+# Data Processing & Scientific Computing
+numpy>=1.21.0
+pandas>=1.3.0
+
+# HTTP Client
+requests>=2.26.0
+
+# Vector Similarity Search (Optional - choose CPU or GPU version)
+# For CPU-only systems:
+faiss-cpu>=1.7.0
+
+# For GPU-accelerated systems (uncomment if you have CUDA):
+# faiss-gpu>=1.7.0
+
+# Development Dependencies (Optional)
+# pytest>=7.0.0
+# pytest-asyncio>=0.18.0
+# black>=21.0.0
+# flake8>=4.0.0
+
