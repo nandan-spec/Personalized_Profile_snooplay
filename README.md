@@ -16,6 +16,61 @@
 - Semantic search using FAISS
 - Product filtering and ranking logic
 
+## Setup Instructions
+
+**⚠️ IMPORTANT: Before starting the application, you must generate the required data files.**
+
+### Step 1: Generate CSV File
+
+First, run `generatecsv.py` to fetch products from Shopify and generate the CSV file:
+
+```bash
+# Set required environment variables
+export SHOPIFY_ACCESS_TOKEN="your_token_here"
+export SHOP_DOMAIN="playhop.myshopify.com"  # Optional, defaults to playhop.myshopify.com
+export SHOPIFY_API_VERSION="2025-07"  # Optional, defaults to 2025-07
+
+# Run the CSV generator
+python generatecsv.py
+```
+
+This will generate:
+- `shopify_products_export.csv` - Main product dataset (active products with in-stock variants only)
+- `variant_missing.csv` - Products with no variants (for reference)
+
+### Step 2: Generate Embeddings and FAISS Index
+
+After generating the CSV file, run `buildfaiss.py` to create the embeddings and FAISS index:
+
+```bash
+# Run the FAISS builder
+python buildfaiss.py
+```
+
+This will generate:
+- `product_search_index.pkl` - Contains product data and embeddings
+- `product_search_index.faiss` - FAISS index for fast similarity search
+- `product_search_index.meta.json` - FAISS index metadata
+
+**Note:** The `buildfaiss.py` script requires the `sentence-transformers` library. Install it if needed:
+```bash
+pip install sentence-transformers
+```
+
+### Step 3: Run the Application
+
+Once both files are generated, you can start the application:
+
+```bash
+# Set required environment variables (if not already set)
+export SHOPIFY_ACCESS_TOKEN="your_token_here"
+export SHOP_DOMAIN="playhop.myshopify.com"  # Optional
+export SHOPIFY_API_VERSION="2025-07"  # Optional
+
+# Run the application
+python app_fast_latest.py
+```
+
 ### Running the Application
 
 ```bash
@@ -81,7 +136,8 @@ The application expects the following data files (configurable via environment v
 
 The repository includes several utility and test scripts:
 
-- `buildfaiss.py` - Build FAISS index from embeddings
+- **`generatecsv.py`** - **REQUIRED FIRST STEP** - Fetches products from Shopify and generates `shopify_products_export.csv`
+- **`buildfaiss.py`** - **REQUIRED SECOND STEP** - Generates embeddings and FAISS index from CSV file
 - `precompute_centroids.py` - Pre-compute goal centroids
 - `precompute_masks.py` - Pre-compute filtering masks
 - `clean_cars_tags.py` - Clean car-related tags
@@ -114,10 +170,12 @@ All configuration can be done via environment variables. The application support
 
 ### ⚠️ Notes
 
+- **Setup Order is Critical:** Always run `generatecsv.py` first, then `buildfaiss.py`, before starting the application
 - The application uses port **8006** by default
 - Ensure all required data files are present before starting the server
 - The application will fall back to CSV data if PKL file is not available
 - FAISS index is optional but recommended for better performance
+- The `buildfaiss.py` script requires `sentence-transformers` library (install with `pip install sentence-transformers`)
 
 ## Development
 
